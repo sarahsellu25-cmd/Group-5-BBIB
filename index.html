@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduSL – Education Platform for Sierra Leone</title>
+  <style>
+    /* ===== RESET & ROOT ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:   #1A7A4A;
+      --green-dk:#135C37;
+      --green-lt:#E8F5EE;
+      --blue:    #1565C0;
+      --gold:    #F5A623;
+      --gold-lt: #FFF8EC;
+      --dark:    #0F1B10;
+      --mid:     #3D4D3E;
+      --light:   #F7FAF8;
+      --white:   #FFFFFF;
+      --border:  #D4E6D8;
+      --radius:  10px;
+      --shadow:  0 4px 20px rgba(0,0,0,.09);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--dark); background: var(--white); line-height: 1.6; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--green); color: var(--white);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .85rem 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    }
+    .nav-brand { display: flex; align-items: center; gap: .6rem; font-size: 1.4rem; font-weight: 700; letter-spacing: .5px; }
+    .nav-brand span.leaf { font-size: 1.6rem; }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,.88); text-decoration: none; font-size: .95rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-toggle { display: none; background: none; border: none; color: var(--white); font-size: 1.6rem; cursor: pointer; }
+
+    @media(max-width:768px){
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 56px; left: 0; right: 0; background: var(--green-dk); padding: 1rem 2rem; gap: 1rem; }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+    }
+
+    /* ===== HERO ===== */
+    #home {
+      background: linear-gradient(135deg, var(--green-dk) 0%, var(--green) 55%, #2ECC71 100%);
+      color: var(--white); text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    #home::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 20px; padding: .3rem 1rem; font-size: .8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.2rem; }
+    #home h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
+    #home h1 em { color: var(--gold); font-style: normal; }
+    #home p { font-size: 1.1rem; opacity: .88; max-width: 580px; margin: 0 auto 2rem; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: .75rem 1.8rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; text-decoration: none; font-size: 1rem; transition: transform .15s, box-shadow .15s; border: none; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+    .btn-primary { background: var(--gold); color: var(--dark); }
+    .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,.7); color: var(--white); }
+    .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+    .stat span { font-size: .85rem; opacity: .8; }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 4rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { display: inline-block; color: var(--green); font-weight: 700; font-size: .8rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: .5rem; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: var(--dark); margin-bottom: .6rem; }
+    .section-sub { color: var(--mid); max-width: 580px; margin-bottom: 2.5rem; }
+
+    /* ===== ABOUT ===== */
+    #about { background: var(--green-lt); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    @media(max-width:700px){ .about-grid { grid-template-columns: 1fr; } }
+    .about-img { width: 100%; border-radius: 16px; overflow: hidden; background: var(--green); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 6rem; }
+    .about-text ul { list-style: none; margin-top: 1rem; }
+    .about-text ul li { padding: .45rem 0; padding-left: 1.5rem; position: relative; color: var(--mid); }
+    .about-text ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+
+    /* ===== COURSES ===== */
+    #courses { background: var(--white); }
+    .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px,1fr)); gap: 1.5rem; }
+    .course-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem; background: var(--white);
+      box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+    }
+    .course-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+    .course-icon { font-size: 2.2rem; margin-bottom: .8rem; }
+    .course-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .4rem; }
+    .course-card p { font-size: .9rem; color: var(--mid); margin-bottom: 1rem; }
+    .course-tag { display: inline-block; background: var(--green-lt); color: var(--green); font-size: .75rem; font-weight: 600; border-radius: 20px; padding: .2rem .75rem; }
+    .course-tag.gold { background: var(--gold-lt); color: #8a5d00; }
+
+    /* ===== SEARCH ===== */
+    .search-bar { display: flex; gap: .75rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .search-bar input { flex: 1 1 220px; padding: .7rem 1rem; border: 2px solid var(--border); border-radius: var(--radius); font-size: .95rem; outline: none; transition: border-color .2s; }
+    .search-bar input:focus { border-color: var(--green); }
+    .search-bar button { background: var(--green); color: var(--white); border: none; padding: .7rem 1.4rem; border-radius: var(--radius); font-size: .95rem; font-weight: 600; cursor: pointer; }
+
+    /* ===== RESOURCES ===== */
+    #resources { background: var(--green-lt); }
+    .resources-list { display: flex; flex-direction: column; gap: 1rem; }
+    .resource-item {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--white); border-radius: var(--radius);
+      padding: 1rem 1.4rem; border: 1px solid var(--border);
+      box-shadow: var(--shadow); cursor: pointer;
+      transition: background .2s;
+    }
+    .resource-item:hover { background: var(--green-lt); }
+    .resource-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .resource-info h4 { font-size: .95rem; font-weight: 700; }
+    .resource-info p { font-size: .82rem; color: var(--mid); }
+    .resource-badge { margin-left: auto; background: var(--green); color: var(--white); font-size: .72rem; padding: .2rem .65rem; border-radius: 20px; }
+
+    /* ===== CONTACT / FORM ===== */
+    #contact { background: var(--white); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    @media(max-width:700px){ .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+    .contact-detail { display: flex; gap: .75rem; align-items: flex-start; margin-bottom: 1rem; }
+    .contact-detail .ico { font-size: 1.4rem; }
+    .contact-detail p { font-size: .9rem; color: var(--mid); }
+
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: .88rem; font-weight: 600; margin-bottom: .35rem; color: var(--dark); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: .7rem 1rem; border: 2px solid var(--border); border-radius: var(--radius);
+      font-size: .95rem; outline: none; transition: border-color .2s; font-family: inherit; resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--green); }
+    .form-group .error { color: #C62828; font-size: .8rem; margin-top: .25rem; display: none; }
+    .form-group.invalid input, .form-group.invalid textarea, .form-group.invalid select { border-color: #C62828; }
+    .form-group.invalid .error { display: block; }
+    #formMsg { margin-top: 1rem; padding: .75rem 1rem; border-radius: var(--radius); display: none; font-weight: 600; }
+    #formMsg.success { background: var(--green-lt); color: var(--green-dk); display: block; }
+    #formMsg.error { background: #FFEBEE; color: #C62828; display: block; }
+
+    /* ===== QUIZ ===== */
+    #quiz { background: var(--green); color: var(--white); }
+    #quiz .section-title { color: var(--white); }
+    #quiz .section-sub { color: rgba(255,255,255,.8); }
+    .quiz-box { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 16px; padding: 2rem; max-width: 620px; margin: 0 auto; }
+    .quiz-question { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: .65rem; }
+    .quiz-opt {
+      background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.2);
+      border-radius: var(--radius); padding: .75rem 1.1rem; cursor: pointer;
+      transition: background .2s; font-size: .95rem;
+    }
+    .quiz-opt:hover { background: rgba(255,255,255,.22); }
+    .quiz-opt.correct { background: rgba(39,174,96,.4); border-color: #27AE60; }
+    .quiz-opt.wrong { background: rgba(192,57,43,.4); border-color: #C0392B; }
+    .quiz-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; }
+    .quiz-score { font-weight: 700; font-size: 1rem; }
+    #quizResult { text-align: center; margin-top: 1.5rem; display: none; }
+    #quizResult h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: .5rem; }
+
+    /* ===== SLIDER / TESTIMONIALS ===== */
+    #testimonials { background: var(--white); }
+    .slider-wrap { position: relative; overflow: hidden; border-radius: 16px; border: 1px solid var(--border); }
+    .slides { display: flex; transition: transform .5s ease; }
+    .slide { min-width: 100%; padding: 2.5rem; }
+    .slide blockquote { font-size: 1.05rem; font-style: italic; color: var(--mid); margin-bottom: 1rem; }
+    .slide cite { font-weight: 700; color: var(--dark); font-style: normal; }
+    .slide cite span { font-weight: 400; color: var(--mid); }
+    .slider-btns { display: flex; justify-content: center; gap: .75rem; margin-top: 1.2rem; }
+    .slider-btn { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; transition: background .2s; }
+    .slider-btn.active { background: var(--green); }
+
+    /* ===== FOOTER ===== */
+    footer { background: var(--dark); color: rgba(255,255,255,.75); text-align: center; padding: 2rem 1.5rem; }
+    footer strong { color: var(--gold); }
+    footer p { font-size: .88rem; margin-top: .3rem; }
+
+    /* ===== IMAGE GALLERY ===== */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .gallery-item { border-radius: var(--radius); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 2px solid var(--border); background: var(--green-lt); transition: transform .2s; }
+    .gallery-item:hover { transform: scale(1.03); }
+
+    /* ===== BACK TO TOP ===== */
+    #backTop { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--green); color: var(--white); border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: none; box-shadow: var(--shadow); z-index: 99; transition: background .2s; }
+    #backTop:hover { background: var(--green-dk); }
+    #backTop.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><span class="leaf">🌿</span> EduSL</div>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#resources">Resources</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="container">
+    <div class="hero-badge">🇸🇱 Sierra Leone's Free Learning Hub</div>
+    <h1>Learn Smarter.<br><em>Build Sierra Leone's Future.</em></h1>
+    <p>Access free lessons, assignments, and resources designed for Sierra Leonean students from primary to university level.</p>
+    <div class="hero-btns">
+      <a href="#courses" class="btn btn-primary">Browse Courses</a>
+      <a href="#contact" class="btn btn-outline">Register Free</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>1,200+</strong><span>Students Enrolled</span></div>
+      <div class="stat"><strong>40+</strong><span>Free Courses</span></div>
+      <div class="stat"><strong>15</strong><span>Districts Reached</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <span class="section-label">Who We Are</span>
+        <h2 class="section-title">Education Built for Sierra Leone</h2>
+        <p style="color:var(--mid); margin-bottom:1rem;">EduSL is a free digital education platform connecting Sierra Leonean students with quality learning materials, interactive lessons, and community support regardless of location.</p>
+        <ul>
+          <li>Free access for all registered students</li>
+          <li>Curriculum aligned with the WAEC & NPSE syllabuses</li>
+          <li>Mobile-friendly works on basic smartphones</li>
+          <li>Covers primary, secondary, and tertiary levels</li>
+          <li>Resources in English and Krio</li>
+        </ul>
+        <br>
+        <a href="#contact" class="btn btn-primary" style="margin-top:.5rem;">Join Now</a>
+      </div>
+      <div class="about-img">🏫</div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses">
+  <div class="container">
+    <span class="section-label">Learning Paths</span>
+    <h2 class="section-title">Explore Our Courses</h2>
+    <p class="section-sub">From BECE prep to ICT skills find a course that fits your goals.</p>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search courses..." />
+      <button onclick="searchCourses()">Search</button>
+    </div>
+
+    <div class="courses-grid" id="courseGrid">
+      <div class="course-card" data-title="mathematics">
+        <div class="course-icon">📐</div>
+        <h3>Mathematics</h3>
+        <p>Algebra, geometry, and arithmetic for NPSE and BECE preparation.</p>
+        <span class="course-tag">Primary & JSS</span>
+      </div>
+      <div class="course-card" data-title="english language">
+        <div class="course-icon">📝</div>
+        <h3>English Language</h3>
+        <p>Grammar, comprehension, essay writing, and oral English practice.</p>
+        <span class="course-tag">All Levels</span>
+      </div>
+      <div class="course-card" data-title="integrated science">
+        <div class="course-icon">🔬</div>
+        <h3>Integrated Science</h3>
+        <p>Biology, chemistry, and physics concepts explained simply with diagrams.</p>
+        <span class="course-tag gold">SSS</span>
+      </div>
+      <div class="course-card" data-title="ict computer">
+        <div class="course-icon">💻</div>
+        <h3>ICT & Computing</h3>
+        <p>HTML, spreadsheets, typing skills, and digital literacy for modern jobs.</p>
+        <span class="course-tag gold">SSS & Tertiary</span>
+      </div>
+      <div class="course-card" data-title="social studies history">
+        <div class="course-icon">🌍</div>
+        <h3>Social Studies</h3>
+        <p>Sierra Leone history, geography, civics, and world studies.</p>
+        <span class="course-tag">Primary & JSS</span>
+      </div>
+      <div class="course-card" data-title="economics business">
+        <div class="course-icon">📊</div>
+        <h3>Economics & Business</h3>
+        <p>Microeconomics, entrepreneurship, and financial literacy skills.</p>
+        <span class="course-tag gold">SSS</span>
+      </div>
+    </div>
+    <p id="noResults" style="display:none; color:var(--mid); margin-top:1rem;">No courses matched your search. Try a different keyword.</p>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources">
+  <div class="container">
+    <span class="section-label">Study Materials</span>
+    <h2 class="section-title">Free Learning Resources</h2>
+    <p class="section-sub">Download notes, past papers, and revision guides — 100% free.</p>
+
+    <div class="resources-list">
+      <div class="resource-item" onclick="downloadResource(this, 'WAEC Past Papers 2020–2024')">
+        <div class="resource-icon">📄</div>
+        <div class="resource-info">
+          <h4>WAEC Past Papers 2020–2024</h4>
+          <p>Mathematics, English, Sciences, Social Studies</p>
+        </div>
+        <span class="resource-badge">PDF</span>
+      </div>
+      <div class="resource-item" onclick="downloadResource(this, 'NPSE Revision Pack')">
+        <div class="resource-icon">📚</div>
+        <div class="resource-info">
+          <h4>NPSE Revision Pack</h4>
+          <p>Comprehensive primary school leaving exam preparation</p>
+        </div>
+        <span class="resource-badge">ZIP</span>
+      </div>
+      <div class="resource-item" onclick="downloadResource(this, 'ICT Notes – HTML & CSS')">
+        <div class="resource-icon">💾</div>
+        <div class="resource-info">
+          <h4>ICT Notes – HTML & CSS</h4>
+          <p>Beginner-friendly web design notes with practice exercises</p>
+        </div>
+        <span class="resource-badge">PDF</span>
+      </div>
+      <div class="resource-item" onclick="downloadResource(this, 'English Grammar Handbook')">
+        <div class="resource-icon">📖</div>
+        <div class="resource-info">
+          <h4>English Grammar Handbook</h4>
+          <p>Tenses, essay structure, comprehension techniques</p>
+        </div>
+        <span class="resource-badge">PDF</span>
+      </div>
+    </div>
+
+    <h3 style="margin:2.5rem 0 1rem; font-size:1.1rem;">Photo Gallery</h3>
+    <div class="gallery">
+      <div class="gallery-item">📖</div>
+      <div class="gallery-item">🖥️</div>
+      <div class="gallery-item">🎓</div>
+      <div class="gallery-item">✏️</div>
+      <div class="gallery-item">🔬</div>
+      <div class="gallery-item">🇸🇱</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="container">
+    <span class="section-label" style="color:var(--gold);">Interactive</span>
+    <h2 class="section-title">Quick Knowledge Check</h2>
+    <p class="section-sub">Test what you know 5 questions across different subjects.</p>
+
+    <div class="quiz-box">
+      <div class="quiz-question" id="quizQ">Loading question…</div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <div class="quiz-footer">
+        <span class="quiz-score" id="quizScore">Score: 0 / 0</span>
+        <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display:none;">Next →</button>
+      </div>
+      <div id="quizResult">
+        <h3 id="resultMsg"></h3>
+        <p id="resultSub" style="opacity:.85;"></p>
+        <br>
+        <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <span class="section-label">Student Voices</span>
+    <h2 class="section-title">What Students Say</h2>
+    <div class="slider-wrap">
+      <div class="slides" id="slides">
+        <div class="slide">
+          <blockquote>"EduSL helped me pass my BECE Mathematics. The notes were clear and the practice questions were exactly like the exam. I am so grateful for this free platform."</blockquote>
+          <cite>Aminata Koroma <span>— JSS 3, Bo</span></cite>
+        </div>
+        <div class="slide">
+          <blockquote>"I live in Kono District and internet is limited. EduSL's mobile-friendly design meant I could study offline after downloading materials. Best educational resource for Sierra Leone."</blockquote>
+          <cite>Mohamed Sesay <span>— SSS 2, Koidu</span></cite>
+        </div>
+        <div class="slide">
+          <blockquote>"The ICT course on HTML and CSS helped me understand web design before starting university. I already knew more than some of my classmates on day one."</blockquote>
+          <cite>Fatmata Bangura <span>— Limkokwing University, Freetown</span></cite>
+        </div>
+      </div>
+    </div>
+    <div class="slider-btns" id="sliderDots"></div>
+  </div>
+</section>
+
+<!-- CONTACT / REGISTRATION -->
+<section id="contact">
+  <div class="container">
+    <span class="section-label">Get In Touch</span>
+    <h2 class="section-title">Register or Contact Us</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Connect With EduSL</h3>
+        <div class="contact-detail"><span class="ico">📍</span><p>Limkokwing University, Wilkinson Road, Freetown, Sierra Leone</p></div>
+        <div class="contact-detail"><span class="ico">📧</span><p>info@edusl.edu.sl</p></div>
+        <div class="contact-detail"><span class="ico">📞</span><p>+232 76 000 000</p></div>
+        <div class="contact-detail"><span class="ico">🕐</span><p>Mon – Fri, 8:00am – 5:00pm</p></div>
+        <br>
+        <p style="font-size:.9rem; color:var(--mid);">Registration is completely free. Fill the form to receive your student ID and get instant access to all resources.</p>
+      </div>
+
+      <div>
+        <form id="regForm" onsubmit="submitForm(event)">
+          <div class="form-group" id="fg-name">
+            <label for="fname">Full Name *</label>
+            <input type="text" id="fname" placeholder="e.g. Mohamed Kamara" />
+            <div class="error">Please enter your full name.</div>
+          </div>
+          <div class="form-group" id="fg-email">
+            <label for="femail">Email Address *</label>
+            <input type="email" id="femail" placeholder="you@example.com" />
+            <div class="error">Please enter a valid email address.</div>
+          </div>
+          <div class="form-group" id="fg-phone">
+            <label for="fphone">Phone Number</label>
+            <input type="tel" id="fphone" placeholder="+232 76 000 000" />
+          </div>
+          <div class="form-group" id="fg-level">
+            <label for="flevel">Education Level *</label>
+            <select id="flevel">
+              <option value="">-- Select level --</option>
+              <option>Primary School</option>
+              <option>JSS (Junior Secondary)</option>
+              <option>SSS (Senior Secondary)</option>
+              <option>University / Tertiary</option>
+              <option>Adult / Self-Study</option>
+            </select>
+            <div class="error">Please select your education level.</div>
+          </div>
+          <div class="form-group">
+            <label for="fmsg">Message (optional)</label>
+            <textarea id="fmsg" rows="3" placeholder="Any questions or comments…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; background:var(--green); color:var(--white);">Register Now 🎓</button>
+          <div id="formMsg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>🌿 EduSL</strong> — Education Platform for Sierra Leone
+  <p>© 2026 EduSL. Developed for DCOMP204 Web Design 1 · Limkokwing University Sierra Leone</p>
+</footer>
+
+<button id="backTop" onclick="scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+/* ============================
+   NAVIGATION
+   ============================ */
+const navToggle = document.getElementById('navToggle');
+const navLinks  = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  links.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+  document.getElementById('backTop').classList.toggle('visible', window.scrollY > 400);
+});
+
+/* ============================
+   COURSE SEARCH
+   ============================ */
+function searchCourses() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.course-card');
+  let found = 0;
+  cards.forEach(card => {
+    const title = card.dataset.title || '';
+    const show = !q || title.includes(q);
+    card.style.display = show ? '' : 'none';
+    if (show) found++;
+  });
+  document.getElementById('noResults').style.display = found ? 'none' : 'block';
+}
+document.getElementById('searchInput').addEventListener('keyup', e => { if (e.key === 'Enter') searchCourses(); });
+
+/* ============================
+   RESOURCE DOWNLOAD ALERT
+   ============================ */
+function downloadResource(el, name) {
+  alert('📥 Download started: ' + name + '\n\nIn the live deployment this would download the actual file. Thank you for using EduSL!');
+}
+
+/* ============================
+   QUIZ
+   ============================ */
+const quizData = [
+  { q: 'What is the capital city of Sierra Leone?', opts: ['Bo', 'Kenema', 'Freetown', 'Makeni'], ans: 2 },
+  { q: 'Which river is the longest in Sierra Leone?', opts: ['Little Scarcies', 'Rokel (Seli)', 'Moa', 'Jong'], ans: 1 },
+  { q: 'What does HTML stand for?', opts: ['HyperText Markup Language', 'HighText Machine Language', 'HyperTool Multi Language', 'None of these'], ans: 0 },
+  { q: 'What year did Sierra Leone gain independence?', opts: ['1957', '1961', '1963', '1970'], ans: 1 },
+  { q: 'Which of the following is a CSS property for text colour?', opts: ['font-color', 'text-color', 'color', 'font-style'], ans: 2 }
+];
+let qIndex = 0, score = 0, answered = false;
+
+function loadQuestion() {
+  if (qIndex >= quizData.length) { showResult(); return; }
+  answered = false;
+  const item = quizData[qIndex];
+  document.getElementById('quizQ').textContent = `Q${qIndex+1}. ${item.q}`;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  item.opts.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'quiz-opt'; btn.textContent = opt;
+    btn.onclick = () => answer(i, btn);
+    opts.appendChild(btn);
+  });
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${qIndex}`;
+}
+
+function answer(i, btn) {
+  if (answered) return;
+  answered = true;
+  const item = quizData[qIndex];
+  const allOpts = document.querySelectorAll('.quiz-opt');
+  allOpts.forEach((el, idx) => {
+    el.style.pointerEvents = 'none';
+    if (idx === item.ans) el.classList.add('correct');
+  });
+  if (i === item.ans) { score++; } else { btn.classList.add('wrong'); }
+  document.getElementById('nextBtn').style.display = 'inline-block';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${qIndex+1}`;
+}
+
+function nextQuestion() { qIndex++; loadQuestion(); }
+
+function showResult() {
+  document.getElementById('quizQ').style.display = 'none';
+  document.getElementById('quizOpts').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  const res = document.getElementById('quizResult');
+  res.style.display = 'block';
+  const pct = Math.round(score / quizData.length * 100);
+  let msg = pct === 100 ? '🏆 Perfect Score!' : pct >= 60 ? '🎉 Well Done!' : '📚 Keep Studying!';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('resultSub').textContent = `You scored ${score} out of ${quizData.length} (${pct}%)`;
+  document.getElementById('quizScore').textContent = `Final Score: ${score} / ${quizData.length}`;
+}
+
+function restartQuiz() {
+  qIndex = 0; score = 0;
+  document.getElementById('quizQ').style.display = 'block';
+  document.getElementById('quizOpts').style.display = 'flex';
+  document.getElementById('quizResult').style.display = 'none';
+  loadQuestion();
+}
+
+loadQuestion();
+
+/* ============================
+   TESTIMONIAL SLIDER
+   ============================ */
+let currentSlide = 0;
+const slidesEl = document.getElementById('slides');
+const totalSlides = slidesEl.children.length;
+const dotsEl = document.getElementById('sliderDots');
+
+for (let i = 0; i < totalSlides; i++) {
+  const d = document.createElement('button');
+  d.className = 'slider-btn' + (i === 0 ? ' active' : '');
+  d.onclick = () => goSlide(i);
+  dotsEl.appendChild(d);
+}
+
+function goSlide(n) {
+  currentSlide = n;
+  slidesEl.style.transform = `translateX(-${n * 100}%)`;
+  document.querySelectorAll('.slider-btn').forEach((d,i) => d.classList.toggle('active', i === n));
+}
+
+setInterval(() => goSlide((currentSlide + 1) % totalSlides), 5000);
+
+/* ============================
+   FORM VALIDATION
+   ============================ */
+function submitForm(e) {
+  e.preventDefault();
+  let valid = true;
+
+  function check(id, groupId, test) {
+    const val = document.getElementById(id).value.trim();
+    const fg = document.getElementById(groupId);
+    if (!test(val)) { fg.classList.add('invalid'); valid = false; }
+    else fg.classList.remove('invalid');
+  }
+
+  check('fname', 'fg-name', v => v.length >= 2);
+  check('femail', 'fg-email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+  check('flevel', 'fg-level', v => v !== '');
+
+  const msg = document.getElementById('formMsg');
+  if (!valid) {
+    msg.className = 'error'; msg.textContent = '⚠️ Please fix the errors above.'; return;
+  }
+
+  const name = document.getElementById('fname').value.trim();
+  msg.className = 'success';
+  msg.textContent = `✅ Welcome, ${name}! Your registration was successful. Check your email for your student ID.`;
+  document.getElementById('regForm').reset();
+  ['fg-name','fg-email','fg-level'].forEach(id => document.getElementById(id).classList.remove('invalid'));
+}
+</script>
+</body>
+</html>
